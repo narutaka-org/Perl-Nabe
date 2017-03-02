@@ -14,32 +14,36 @@ use Data::Dumper;
 #	Test Main
 #----------------------------------------------------------------------------------------------------------
 
-#２点作る
-my $p1 = myPoint->new(0,0,0);
-my $p2 = myPoint->new(4,4,0);
+	#----------------------------------------------------------
+	#テストコード
+	#----------------------------------------------------------
 
-#線分作る
-my $l1 = myLine->new($p1,$p2);
+	#２点作る
+	my $p1 = myPoint->new(0,0,0);
+	my $p2 = myPoint->new(4,4,0);
 
-#2点の距離or線分の長さ
-print qq(\n-length-\n);
-my $x1 = myGeometry::distance($p1,$p2);
-my $x2 = myGeometry::distance($l1);
-print qq($x1\n$x2\n);
+	#線分作る
+	my $l1 = myLine->new($p1,$p2);
 
-#２点の中心or線分の中心
-print qq(\n-Coordinate-\n);
-my @x3 = myGeometry::midpoint($p1,$p2);
-my @x4 = myGeometry::midpoint($l1);
-print qq($x3[0],$x3[1],$x3[2]\n$x4[0],$x4[1],$x4[2]\n);
+	#2点の距離or線分の長さ
+	print qq(\n-length-\n);
+	my $x1 = myGeometry::distance($p1,$p2);
+	my $x2 = myGeometry::distance($l1);
+	print qq($x1\n$x2\n);
 
-#ヘロンの公式
-my $p3 = myPoint->new(4,4,4);
-print qq(\n-area-\n);
-my $x5 = myGeometry::herons($p1,$p2,$p3);
-my $x6 = myGeometry::herons($l1,$p3);
-my $x7 = myGeometry::herons($p3,$l1);
-print qq($x5\n$x6\n$x7\n);
+	#２点の中心or線分の中心
+	print qq(\n-Coordinate-\n);
+	my @x3 = myGeometry::midpoint($p1,$p2);
+	my @x4 = myGeometry::midpoint($l1);
+	print qq($x3[0],$x3[1],$x3[2]\n$x4[0],$x4[1],$x4[2]\n);
+
+	#ヘロンの公式
+	my $p3 = myPoint->new(4,4,4);
+	print qq(\n-area-\n);
+	my $x5 = myGeometry::herons($p1,$p2,$p3);
+	my $x6 = myGeometry::herons($l1,$p3);
+	my $x7 = myGeometry::herons($p3,$l1);
+	print qq($x5\n$x6\n$x7\n);
 
 #----------------------------------------------------------------------------------------------------------
 #	myGeometry
