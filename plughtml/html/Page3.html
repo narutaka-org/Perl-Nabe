@@ -1,0 +1,47 @@
+<!-- Include Frame FileName -->
+{% extends(frame) %}
+
+<!-- Plug Menu -->
+{% block(menu) %}
+
+	[ <b>Page1</b> | <b>Page2</b> | <a href="">Page3</a> ]
+
+{% endblock(menu) %}
+
+<!-- Plug MainBody -->
+{% block(mainbody) %}
+
+<p>Sanple Form</p>
+
+<form method="POST" action="">
+
+<p>
+	NAME:<input type="text" name="NAME" value="{% formValue(NAME) %}">
+	<br>
+	<span>{% formError(NAME) %}</span>
+</p>
+
+<p>
+	AGE:<select name="AGE">
+			<option value=""></option><option value="A" {% formSelect(AGE[A]) %}>未成年</option><option value="B" {% formSelect(AGE[B]) %}>成人</option>
+	</select>
+	<br>
+	<span>{% formError(AGE) %}</span>
+</p>
+
+<p>
+	SEX:<input type="radio" name="SEX" value="M" {% formRadio(SEX[M]) %}>♂ 　 
+		<input type="radio" name="SEX" value="F" {% formRadio(SEX[F]) %}>♀ 　 
+	<br>
+	<span>{% formError(SEX) %}</span>
+</p>
+
+<p>
+	MEMO:<textarea name="MEMO">{% dataValue(MEMO) %}</textarea>
+	<br>
+	<span>{% formError(MEMO) %}</span>
+</p>
+
+</form>
+
+{% endblock(mainbody) %}

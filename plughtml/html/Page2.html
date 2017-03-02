@@ -1,0 +1,29 @@
+<!-- Include Frame FileName -->
+{% extends(frame) %}
+
+<!-- Plug Menu -->
+{% block(menu) %}
+
+	[ <a href="">Page1</a> | <b>Page2</b> | <b>Page3</b> ]
+
+{% endblock(menu) %}
+
+<!-- Plug MainBody -->
+{% block(mainbody) %}
+
+<p>Sanple Table</p>
+
+<table>
+	<tr>
+		<th>ID</th>
+		<td>NAME</td>
+	</tr>
+{% tableblock(COLOR) %}
+	<tr>
+		<th>{% dataValue(COLOR_ID) %}</th>
+		<td>{% dataValue(COLOR_NAME) %}</td>
+	</tr>
+{% endtableblock(COLOR) %}
+</table>
+
+{% endblock(mainbody) %}
