@@ -25,44 +25,69 @@ use warnings;
 		exit;
 	}
 
-	#SELECT
-	if(1)
-	{
-		my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
-		my $sSQL = qq(SELECT COUNT(*) FROM `table` WHERE `No` = ? AND `ID` = ?;);
-		my @lPRF = ("No","ID");
-		#my @rRet = &myConSql::sqlSelect( \@hSQL, $sSQL, \@lPRF, \&refError, $ARG, 1 );
-		my @rRet = &myConSql::sqlSelect( \@hSQL, $sSQL, \@lPRF, \&refError, $ARG );
-		my $cnt = $rRet[0]->{'COUNT(*)'};
-	}
+	#SQLスタック
+	my (@SQLLIST);
+	my $sSQL1 = qq(INSERT INTO `table` (`ID`,`PW`,`DATETIME`) VALUES (?,?,NOW()););		#INSERT
+	my @lPRF1 = ("ID","PW");
+	my @SQLD1 = ("INSERT",$sSQL1,\@lPRF1);
+	$SQLLIST[0] = \@SQLD1;
+	my $sSQL2 = qq(UPDATE FROM `table` SET `ID` = ? WHERE `No` = ?;);					#UPDATE
+	my @lPRF2 = ("ID","No");
+	my @SQLD2 = ("UPDATE",$sSQL2,\@lPRF2);
+	$SQLLIST[1] = \@SQLD2;
+	my $sSQL3 = qq(SELECT COUNT(*) FROM `table` WHERE `No` = ? AND `ID` = ?;);			#SELECT
+	my @lPRF3 = ("No","ID");
+	my @SQLD3 = ("SELECT",$sSQL3,\@lPRF3);
+	$SQLLIST[2] = \@SQLD3;
 
-	#UPDATE
-	if(1)
-	{
-		my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
-		my $sSQL = qq(UPDATE FROM `table` SET `ID` = ? WHERE `No` = ?;);
-		my @lPRF = ("ID","No");
-		#&myConSql::sqlUpdate( \@hSQL, $sSQL, \@lPRF, \&refError, $ARG, 1 );
-		&myConSql::sqlUpdate( \@hSQL, $sSQL, \@lPRF );
-	}
+	#SQL実行
+	my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
+	my @rRet = &myConSql::sqlMonoCoreEx( \@hSQL, \@SQLLIST, \&refError, $ARG, 1 );
+	my $cnt = $rRet[0]->{'COUNT(*)'};
 
-	#INSERT
-	if(1)
-	{
-		my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
-		my $sSQL = qq(INSERT INTO `table` (`ID`,`PW`,`DATETIME`) VALUES (?,?,NOW()););
-		my @lPRF = ("ID","PW");
-		&myConSql::sqlInsert( \@hSQL, $sSQL, \@lPRF );
-	}
 
-	#DELETE
-	if(1)
-	{
-		my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
-		my $sSQL = qq(DELETE FROM `table` WHERE `DATETIME` < ?;);
-		my @lPRF = ("TIME");
-		&myConSql::sqlDelete( \@hSQL, $sSQL, \@lPRF );
-	}
+	#1行実行バージョン
+	#	my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
+	##SELECT
+	#	my $sSQL = qq(SELECT COUNT(*) FROM `table` WHERE `No` = ? AND `ID` = ?;);
+	#	my @lPRF = ("No","ID");
+	#	my @rRet = &myConSql::sqlSelect( \@hSQL, $sSQL, \@lPRF );
+	#	my $cnt = $rRet[0]->{'COUNT(*)'};
+	##UPDATE
+	#	my $sSQL = qq(UPDATE FROM `table` SET `ID` = ? WHERE `No` = ?;);
+	#	my @lPRF = ("ID","No");
+	#	&myConSql::sqlUpdate( \@hSQL, $sSQL, \@lPRF );
+	##INSERT
+	#	my $sSQL = qq(INSERT INTO `table` (`ID`,`PW`,`DATETIME`) VALUES (?,?,NOW()););
+	#	my @lPRF = ("ID","PW");
+	#	&myConSql::sqlInsert( \@hSQL, $sSQL, \@lPRF );
+	##DELETE
+	#	my $sSQL = qq(DELETE FROM `table` WHERE `DATETIME` < ?;);
+	#	my @lPRF = ("TIME");
+	#	&myConSql::sqlDelete( \@hSQL, $sSQL, \@lPRF );
+
+
+	#旧ラッパーモード
+	#	my @hSQL = &myConSql::hSQL(\%Conf,\%Attr);
+	#	@hSQL = &ConnectSTART(\@hSQL);
+	#	@hSQL = &TrnSTART(\@hSQL);
+	#	@hSQL = &ExecuteSELECT(\@hSQL,$SQL,@PRF);		#SELECT
+	#	if( &CheckSQL(\@hSQL) eq "1" )
+	#	{
+	#		print qq(SQLエラー[SELECT]);
+	#	}else{
+	#		my @%Ret = &GetSELECT(\@hSQL);
+	#	}
+	#	my @@PRFL = SetPrfList("",@PRF1);
+	#	@@PRFL = SetPrfList(@@PRFL,@PRF2);
+	#	@hSQL = &ExecuteINSERT(\@hSQL,$SQL,@@PRFL);		#INSERT
+	#	@hSQL = &ExecuteUPDATE(\@hSQL,$SQL,@@PRFL);		#UPDATE
+	#	@hSQL = &TrnEND(\@hSQL);
+	#	@hSQL = &ConnectEND(\@hSQL);
+	#	if( &CheckSQL(\@hSQL) eq "1" )
+	#	{
+	#		print qq(SQLエラー[INSERT,UPDATE,Transaction]);
+	#	}
 
 0;
 
@@ -118,7 +143,7 @@ use DBD::Pg;
 		if( defined($_[6]) ){ $debug = 1; }
 		
 		@hSQL = &ConnectSTART(\@hSQL);
-		@hSQL = &TrnSTART(\@hSQL);
+		#@hSQL = &TrnSTART(\@hSQL);
 		if( $mode eq "SELECT" )
 		{
 			@hSQL = &ExecuteSELECT(\@hSQL,$SQL,\@PRF);
@@ -127,6 +152,56 @@ use DBD::Pg;
 			if( $mode eq "INSERT" || $mode eq "UPDATE" || $mode eq "DELETE" )
 			{
 				@hSQL = &SQLExecute($mode,\@hSQL,$SQL,\@PRFL);
+			}
+		}
+		#@hSQL = &TrnEND(\@hSQL);
+		@hSQL = &ConnectEND(\@hSQL);
+		if( $debug ){ print &GetMsg(\@hSQL); }
+		if( &CheckSQL(\@hSQL) eq "1" )
+		{
+			if(defined($argument)){ $coderef->($argument); }
+		}
+		if( $mode eq "SELECT" )
+		{
+			my @Ret = &GetSELECT(\@hSQL);
+			return (@Ret);
+		}
+	}
+
+	#-----------------------------------------------------------
+	# さらに複数実行可能に
+	#-----------------------------------------------------------
+	sub sqlMonoCoreEx
+	{
+		my @hSQL = @{$_[0]};
+		my $coderef = "";
+		my $argument = undef;
+		my $debug = 0;
+		if( defined($_[2]) ){ $coderef = $_[2]; }
+		if( defined($_[3]) ){ $argument = $_[3]; }
+		if( defined($_[4]) ){ $debug = 1; }
+		
+		@hSQL = &ConnectSTART(\@hSQL);
+		@hSQL = &TrnSTART(\@hSQL);
+		
+		my @mSQL = @{$_[1]};
+		my $mode = "";			#最後がSELECTなら結果を返す
+		foreach (@mSQL)
+		{
+			my @len = @{$_};
+			$mode = $len[0];
+			my $SQL  = $len[1];
+			my @PRF  = @{$len[2]};
+			
+			if( $mode eq "SELECT" )
+			{
+				@hSQL = &ExecuteSELECT(\@hSQL,$SQL,\@PRF);
+			}else{
+				my @PRFL = &SetPrfList("",\@PRF);
+				if( $mode eq "INSERT" || $mode eq "UPDATE" || $mode eq "DELETE" )
+				{
+					@hSQL = &SQLExecute($mode,\@hSQL,$SQL,\@PRFL);
+				}
 			}
 		}
 		@hSQL = &TrnEND(\@hSQL);
