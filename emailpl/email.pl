@@ -28,8 +28,8 @@
 		my $email = myEmailMIME($from,$to,$subj,$body,$html);
 		myEmailSend($email,$smtp);
 		
-		$email = myEmailMIME($from,$to,$subj,$body,"");
-		myEmailSend($email,"");
+		$email = myEmailMIME($from,$to,$subj,$body);
+		myEmailSend($email);
 	}
 
 #----------------------------------------------------------------------------------------------------------
@@ -46,7 +46,8 @@
 		my $to   = $_[1];
 		my $subj = $_[2];
 		my $body = $_[3];
-		my $html = $_[4];
+		my $html = "";
+		if( defined($_[4]) ){ $html = $_[4]; }
 		if($html)
 		{
 			my $email = Email::MIME->create
@@ -83,7 +84,8 @@
 	sub myEmailSend
 	{
 		my $email = $_[0];
-		my $smtp  = $_[1];
+		my $smtp  = "";
+		if( defined($_[1]) ){ $smtp = $_[1]; }
 		if($smtp)
 		{
 			my $sender = new Email::Send( { mailer => 'SMTP' } );
