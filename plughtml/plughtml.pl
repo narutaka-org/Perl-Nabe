@@ -24,7 +24,7 @@ use warnings;
 
 	#	HTML操作
 	#		$HTML = &Proc_SetIf($HTML,"TAG",BOOL);					# IF 置換
-	#		$HTML = &Proc_Data($HTML,"TAG","DATA");					# HTML 置換 (タグは特殊文字に置換されます)
+	#		$HTML = &Proc_Data($HTML,"TAG","DATA");					# 本文 差し込み (タグは特殊文字に置換されます)
 
 	#	TABLE操作
 	#		my ($TABLE);
@@ -186,7 +186,7 @@ use Encode;
 		if (defined($_[3])){ if( $_[3] ne "" ){ $BODY    = $_[3]; } }
 		my $meta  = qq(<meta http-equiv="refresh" content="$content;url=$_[0]">);
 		my $html = &Html_Base();
-		   $html = &Proc_Data($html,"meta",$meta,"NoSec");
+		   $html = &Proc_Html($html,"meta",$meta);
 		   $html = &Proc_Data($html,"title",$title);
 		   $html = &Proc_Data($html,"BODY",$BODY);
 		return $html;
@@ -264,7 +264,15 @@ use Encode;
 	}
 
 	#-----------------------------------------------------------
-	# HTML置換
+	# HTML差し込み
+	#-----------------------------------------------------------
+	sub Proc_Html
+	{
+		return &Proc_Data($_[0],$_[1],$_[2],"NoSec");
+	}
+
+	#-----------------------------------------------------------
+	# 本文差し込み
 	#-----------------------------------------------------------
 	sub Proc_Data
 	{
