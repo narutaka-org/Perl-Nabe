@@ -1,0 +1,14 @@
+Windows10 で
+
+Ghostscript
+ImageMagick
+MeCab
+Weka
+Caffe
+R
+
+をPerlから利用するには
+
+
+
+
