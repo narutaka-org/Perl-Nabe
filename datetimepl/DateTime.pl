@@ -22,41 +22,48 @@ use Data::Dumper;
 	#サンプルコード
 	#----------------------------------------------------------
 
-	my $dt = myDateTime->new;
-	my $time1 = $dt->dtNow();
-	my $time2 = $dt->dtNowAddS(24*60*60);
-	my $time3 = $dt->dtNowAddD(-3);
-	my $time4 = $dt->dtMakeD('2015-9-9 10:10:10');
-	my $time5 = $dt->dtMakeD('2015-9-8');
+	# --- 生成 ---
 
-	print $dt->fMyDT($time1) .qq(\n);
-	print $dt->fMyD($time1) .qq(\n);
-	print $dt->fMyM($time1) .qq(\n);
-	print Encode::encode("utf-8", $dt->fMyDTJ($time1) ).qq(\n);
-	print Encode::encode("utf-8", $dt->fMyDJ($time1) ).qq(\n);
-	print Encode::encode("utf-8", $dt->fMyMJ($time1) ).qq(\n);
-	print Encode::encode("utf-8", $dt->fMyDTJW($time1) ).qq(\n);
-	print Encode::encode("utf-8", $dt->fMyDJW($time1) ).qq(\n);
+	my $dt1 = myDateTime->new;								# 今の時間
+	my $dt2 = myDateTime->new('S',int(24*60*60));			# 秒数加減
+	my $dt3 = myDateTime->new('D','-3');					# 日数加減
+	my $dt4 = myDateTime->new('E','123456789');				# UNIX time
+	my $dt5 = myDateTime->new('T','2015-8-8 10:10:10');		# DateTime
+	my $dt6 = myDateTime->new('T','2015-9-9');				# Date
 
-	#----------------------------------------------------------
-	#テストコード
-	#----------------------------------------------------------
+	# --- 表示 ---
 
-	#my $t = time;
+	print $dt1->PF('G') .qq(\n);							# Mon, 27-Mar-2017 05:55:48 GMT
 
+	print $dt1->PF('M') .qq(\n);							# 2017-03
+	print $dt1->PF('D') .qq(\n);							# 2017-03-27
+	print $dt1->PF('T') .qq(\n);							# 14:55:48
+	print $dt1->PF('DT') .qq(\n);							# 2017-03-27 14:55:48
+	print $dt1->PF('DW') .qq(\n);							# 2017-03-27 Monday
+	print $dt1->PF('DN') .qq(\n);							# 2017-03-27(Mon)
+	print $dt1->PF('DWT') .qq(\n);							# 2017-03-27 Monday 14:55:48
+	print $dt1->PF('DNT') .qq(\n);							# 2017-03-27(Mon) 14:55:48
 
+	print Encode::encode("utf-8",$dt1->PF('JM')) .qq(\n);	# 2017年03月
+	print Encode::encode("utf-8",$dt1->PF('JD')) .qq(\n);	# 2017年03月27日
+	print Encode::encode("utf-8",$dt1->PF('JT')) .qq(\n);	# 14時55分48秒
+	print Encode::encode("utf-8",$dt1->PF('JDT')) .qq(\n);	# 2017年03月27日 14時55分48秒
+	print Encode::encode("utf-8",$dt1->PF('JDW')) .qq(\n);	# 2017年03月27日 月曜日
+	print Encode::encode("utf-8",$dt1->PF('JDN')) .qq(\n);	# 2017年03月27日(月)
+	print Encode::encode("utf-8",$dt1->PF('JDWT')) .qq(\n);	# 2017年03月27日 月曜日 14時55分48秒
+	print Encode::encode("utf-8",$dt1->PF('JDNT')) .qq(\n);	# 2017年03月27日(月) 14時55分48秒
 
-	#print &fMyDT($time3);
+	# --- 比較 ---
 
+	if( $dt1->E > $dt2->E ){ print qq(dt1:large \n); }else{ print qq(dt1:small \n); }
+	if( $dt1->E > $dt3->E ){ print qq(dt1:large \n); }else{ print qq(dt1:small \n); }
 
-	#print Dumper $time1 ;
-	#print Dumper $time2 ;
-	#print Dumper $time3 ;
-	#print Dumper $time4 ;
-	#print Dumper $time5 ;
+	# --- 追加 ---
 
-
-
+	$dt1->ADD('S',int(24*60*60));		#追加（秒）
+	$dt1->ADD('M',int(24*60));			#追加（分）
+	$dt1->ADD('H',int(24));				#追加（時）
+	$dt1->ADD('D',int(1));				#追加（日）
 
 #----------------------------------------------------------------------------------------------------------
 0;
