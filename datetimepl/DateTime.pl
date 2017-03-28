@@ -35,7 +35,7 @@ use Data::Dumper;
 
 	print $dt1->PF('G') .qq(\n);							# Mon, 27-Mar-2017 05:55:48 GMT
 
-	print $dt1->PF('M') .qq(\n);							# 2017-03
+	print $dt1->PF('C') .qq(\n);							# 2017-03
 	print $dt1->PF('D') .qq(\n);							# 2017-03-27
 	print $dt1->PF('T') .qq(\n);							# 14:55:48
 	print $dt1->PF('DT') .qq(\n);							# 2017-03-27 14:55:48
@@ -44,7 +44,7 @@ use Data::Dumper;
 	print $dt1->PF('DWT') .qq(\n);							# 2017-03-27 Monday 14:55:48
 	print $dt1->PF('DNT') .qq(\n);							# 2017-03-27(Mon) 14:55:48
 
-	print Encode::encode("utf-8",$dt1->PF('JM')) .qq(\n);	# 2017年03月
+	print Encode::encode("utf-8",$dt1->PF('JC')) .qq(\n);	# 2017年03月
 	print Encode::encode("utf-8",$dt1->PF('JD')) .qq(\n);	# 2017年03月27日
 	print Encode::encode("utf-8",$dt1->PF('JT')) .qq(\n);	# 14時55分48秒
 	print Encode::encode("utf-8",$dt1->PF('JDT')) .qq(\n);	# 2017年03月27日 14時55分48秒
@@ -52,6 +52,14 @@ use Data::Dumper;
 	print Encode::encode("utf-8",$dt1->PF('JDN')) .qq(\n);	# 2017年03月27日(月)
 	print Encode::encode("utf-8",$dt1->PF('JDWT')) .qq(\n);	# 2017年03月27日 月曜日 14時55分48秒
 	print Encode::encode("utf-8",$dt1->PF('JDNT')) .qq(\n);	# 2017年03月27日(月) 14時55分48秒
+
+	print $dt1->PF('W') .qq(\n);							# Monday
+	print $dt1->PF('N') .qq(\n);							# Mon
+	print Encode::encode("utf-8",$dt1->PF('JW')) .qq(\n);	# 月曜日
+	print Encode::encode("utf-8",$dt1->PF('JN')) .qq(\n);	# 月
+
+	print $dt1->PF('M') .qq(\n);							# March
+	print $dt1->PF('m') .qq(\n);							# Mar
 
 	# --- 比較 ---
 
