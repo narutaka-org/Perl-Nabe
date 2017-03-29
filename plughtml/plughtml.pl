@@ -32,6 +32,15 @@ use myPlugHtml;
 	#		$HTML->Proc_SetIf("TAG",BOOL);							# IF 置換
 	#		$HTML->Proc_Data("TAG","DATA");							# 本文 差し込み (タグは特殊文字に置換されます)
 
+	#	FOR操作
+	#		my $TEMP = $HTML->Proc_GetFor("TAG");
+	#		for (::) {
+	#			$TEMP->Proc_Data("TAG1","DATA1");
+	#			$TEMP->Proc_Data("TAG2","DATA2");
+	#			$TEMP->Proc_MakeFor;
+	#		}
+	#		$HTML->Proc_SetFor("TAG",$TEMP);						# FOR 置換
+
 	#	TABLE操作
 	#		my $TABLE = $HTML->Proc_GetTable("TAG");
 	#		for (::) {
@@ -62,7 +71,7 @@ use myPlugHtml;
 	my %Conf = ( "path" => "./html/", "extn" => ".html" );
 	
 	#Page1表示
-	if(1)
+	if(0)
 	{
 		my $HTML = myPlugHtml->new(%Conf);
 		$HTML->Html_Read("Page1");
@@ -73,7 +82,7 @@ use myPlugHtml;
 	}
 	
 	#Page2表示
-	if(1)
+	if(0)
 	{
 		my %Color = ( "black" => "#000000", "red" => "#ff0000", "yellow" => "#ffff00", "white" => "#ffffff" );
 		my $HTML2 = myPlugHtml->new(%Conf);
@@ -91,7 +100,7 @@ use myPlugHtml;
 	}
 	
 	#Page3表示
-	if(1)
+	if(0)
 	{
 		my $HTML3 = myPlugHtml->new(%Conf);
 		$HTML3->Html_Read("Page3");
@@ -107,7 +116,7 @@ use myPlugHtml;
 	}
 	
 	#Refresh表示
-	if(1)
+	if(0)
 	{
 		my $HTML4 = myPlugHtml->new();
 		$HTML4->Html_Refresh("http://google.co.jp");
@@ -115,6 +124,48 @@ use myPlugHtml;
 		exit;
 	}
 	
+	#PageA表示
+	if(1)
+	{
+		my $HTML5 = myPlugHtml->new(%Conf);
+		$HTML5->Html_Read("PageA");
+		$HTML5->Proc_Data("PageTitle","時間割");
+		#For開始
+		my $TEMP1 = $HTML5->Proc_GetFor("Menu");
+		for ( my $count = 1; $count < 3; $count++)
+		{
+			my $MenuTitle = $count.qq(年生);
+			$TEMP1->Proc_Data("MenuTitle",$MenuTitle);
+			#Table開始
+			my $TABLE = $TEMP1->Proc_GetTable("Menu");
+			my @Menu = ('月曜日','火曜日','・・・');
+			foreach(@Menu)
+			{
+				$TABLE->Proc_Data("Menu",$_);
+				$TABLE->Proc_MakeTable;
+			}
+			$TEMP1->Proc_SetTable("Menu",$TABLE);
+			#Table終了
+			$TEMP1->Proc_MakeFor;
+		}
+		$HTML5->Proc_SetFor("Menu",$TEMP1);
+		#For終了
+		$HTML5->Proc_Data("MainTitle","1年生の月曜日");
+		$HTML5->Proc_Data("MainBody","今日はお昼までに帰りましょう");
+		#For開始
+		my $TEMP2 = $HTML5->Proc_GetFor("Body");
+		my %JIKAN = ( "国語" => "教科書を読んでみましょう", "算数" => "リンゴとパイナップルを足してみましょう", "音楽" => "ロックを聴いてみましょう" );
+		foreach my $key(keys(%JIKAN))
+		{
+			$TEMP2->Proc_Data("BodyTitle",$key);
+			$TEMP2->Proc_Data("Body",$JIKAN{$key});
+			$TEMP2->Proc_MakeFor;
+		}
+		$HTML5->Proc_SetFor("Body",$TEMP2);
+		#For終了
+		$HTML5->Html_Shown();
+		exit;
+	}
 	exit;
 
 #----------------------------------------------------------------------------------------------------------

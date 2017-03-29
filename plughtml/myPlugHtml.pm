@@ -231,6 +231,44 @@ use Encode;
 	}
 
 	#-----------------------------------------------------------
+	# for 差し込み
+	#-----------------------------------------------------------
+	sub Proc_GetFor
+	{
+		my $self = shift;
+		my $tag  = $_[0];
+		my $html = "";
+		if( $self->{html} =~ m/{% for\($tag\) %}(.*){% endfor\($tag\) %}/s ){ $html = $1; }
+		$self->{html} =~ s/{% for\($tag\) %}(.*){% endfor\($tag\) %}/{% setforblock\($tag\) %}/s;
+		my %Conf = ( "path" => $self->{path}, "extn" => $self->{extn}, "html" => $html, "temp" => $html);
+		my $TEMP = myPlugHtml->new(%Conf);
+		return $TEMP;
+	}
+	
+	sub Proc_MakeFor
+	{
+		my $self = shift;
+		$self->{table} .= $self->{html};
+		$self->{html} = $self->{temp};
+		return;
+	}
+	
+	sub Proc_SetFor
+	{
+		my $self = shift;
+		my $tag  = $_[0];
+		my $table = $_[1]->_Html_ForCode;
+		$self->{html} =~ s/{% setforblock\($tag\) %}/$table/g;
+		return;
+	}
+	
+	sub _Html_ForCode
+	{
+		my $self = shift;
+		return $self->{table};
+	}
+
+	#-----------------------------------------------------------
 	# table 差し込み（入れ子の場合内側をGetSetしてから外側へ）
 	#-----------------------------------------------------------
 	sub Proc_GetTable
@@ -257,7 +295,7 @@ use Encode;
 	{
 		my $self = shift;
 		my $tag  = $_[0];
-		my $table = $_[1]->_Proc_TableCode;
+		my $table = $_[1]->_Html_TableCode;
 		$self->{html} =~ s/{% settableblock\($tag\) %}/$table/g;
 		return;
 	}

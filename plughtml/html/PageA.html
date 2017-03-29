@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Sample</title>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td colspan="2"><h1>{% dataValue(PageTitle) %}</h1></td>
+			<tr>
+			<tr>
+				<td>
+					<!-- Plug Menu -->
+					{% for(Menu) %}
+					<ul>
+						<li class="title">{% dataValue(MenuTitle) %}</li>
+						{% tableblock(Menu) %}
+						<li>{% dataValue(Menu) %}</li>
+						{% endtableblock(Menu) %}
+					</ul>
+					{% endfor(Menu) %}
+				</td>
+				<td>
+					<!-- Plug Title -->
+					<h2>{% dataValue(MainTitle) %}</h2>
+					<div>
+						{% dataValue(MainBody) %}
+					</div>
+					<!-- Plug Body -->
+					{% for(Body) %}
+					<h3>{% dataValue(BodyTitle) %}</h3>
+					<div>
+						{% dataValue(Body) %}
+					</div>
+					{% endfor(Body) %}
+				</td>
+			<tr>
+		</table>
+	</body>
+</html>
