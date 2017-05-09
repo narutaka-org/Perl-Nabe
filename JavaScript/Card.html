@@ -1,0 +1,118 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<script language="JavaScript" type="text/javascript">
+		var arrCard = ['JCB','American Express','Diners Club','VISA','MasterCard','Discover'];
+		function cardCheck()
+		{
+			var msg = document.getElementById('c-msg');
+			msg.innerText = "";
+			if( cardNumber(document.getElementById('c-num')) == 0 ){ msg.innerText = "カード番号が正しくない"; return; }
+			if( cardSecurity(document.getElementById('c-csc')) == 0 ){ msg.innerText = "セキュリティコードが正しくない"; return; }
+			//if( cardExpiration(num) == 0 ){ msg.innerText = "有効期限が正しくない"; return; }
+		}
+		function cardNumber( objNum )
+		{
+			objNum.value = objNum.value.replace(/[^0-9\-]/g,"");
+			var nCn = objNum.value.length;
+			if( nCn == 16 || nCn == 15 || nCn == 14 )
+			{
+				var nLn = objNum.value.length;
+				var aLc = objNum.value.split("");
+				var nSb = 0;
+				for ( var i = 0; i < nLn; i++ ){ nSb += Number( xTd( i, aLc[i] ) ); }
+				if( nSb == 0 ){ return 0; }
+				if( nSb % 10 == 0 )
+				{
+					var strCard = "不明";
+					if( Number(aLc[0]) == 3 )
+					{
+						if( nCn == 16 ){ strCard = arrCard[0]; }
+						if( nCn == 15 ){ strCard = arrCard[1]; }
+						if( nCn == 14 ){ strCard = arrCard[2]; }
+					}
+					if( Number(aLc[0]) == 4 ){ strCard = arrCard[3]; }
+					if( Number(aLc[0]) == 5 ){ strCard = arrCard[4]; }
+					//if( Number(aLc[0]) == 6 ){ strCard = arrCard[5]; }
+					document.getElementById('c-grp').innerText = strCard;
+					return 1;
+				}
+			}
+			return 0;
+		}
+		function cardSecurity( objNum )
+		{
+			objNum.value = objNum.value.replace(/[^0-9\-]/g,"");
+			var nCn = objNum.value.length;
+			if( document.getElementById('c-grp').innerText == arrCard[1] )
+			{
+				if( nCn == 4 ){ return 1; }
+			}else{
+				if( nCn == 3 ){ return 1; }
+			}
+			return 0;
+		}
+		function xTd( nIndex, strVal )
+		{
+			if( (nIndex % 2) == 0 )
+			{
+				var ar = ['0','2','4','6','8','1','3','5','7','9'];
+				return ar[strVal];
+			}else{
+				return strVal;
+			}
+		}
+	</script>
+	<title>　クレジットカード　チェッカー　</title>
+</head>
+<body>
+	<form>
+		<table border="1">
+			<tr>
+				<th>カード種類</th>
+				<td>
+					<span id="c-grp"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>カード番号</th>
+				<td>
+					<input type="text" id="c-num" size="30" maxlength="16" style="ime-mode: disabled;">
+					<br>
+					<span class="info">ハイフン（-）不要</span>
+				</td>
+			</tr>
+			<tr>
+				<th>有効期限</th>
+				<td>
+					<input type="text" id="c-exp_m" size="2" maxlength="2" style="ime-mode: disabled;"> 月
+					　/　
+					<input type="text" id="c-exp_y" size="2" maxlength="2" style="ime-mode: disabled;"> 年
+					<br>
+					<span>カード表記「01/23」の場合「01月/23年」</span>
+				</td>
+			</tr>
+			<tr>
+				<th>セキュリティコード</th>
+				<td>
+					<input type="text" id="c-csc" size="10" maxlength="4" style="ime-mode: disabled;">
+					<br>
+					<span class="info">3桁(AMEXは4桁)</span>
+				</td>
+			</tr>
+			<tr>
+				<th>確認</th>
+				<td>
+					<span id="c-msg" style="color: #ff0000;"></span>
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">
+					<input id="button" type="button" value="確認" onclick="cardCheck();return false;">
+				</th>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
