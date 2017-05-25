@@ -29,7 +29,8 @@ use mySendMail;
 		my $html = '<head><title>テスト</title></head><body>ほんぶん<br />HTMLメール<br />だよ</body></html>';
 
 		#HTMLメール送信
-		my $email1 = $mSM->myEmailMIME($from,$to,$subj,$body,$html);
+		my $enhtml = $mSM->myEmailEncHtml($html);
+		my $email1 = $mSM->myEmailMIME($from,$to,$subj,$body,$enhtml);
 		$mSM->myEmailSend($email1);
 
 		#TEXTメール送信
