@@ -284,6 +284,9 @@ use DBD::Pg;
 	sub sqlMonoAdd
 	{
 		my $self = shift;
+		my @lPRF = ();
+		$_[0] //= 'SELECT CHAR_LENGTH( NULL );';
+		$_[1] //= \@lPRF;
 		my @len = ($_[0],$_[1]);
 		$self->{SQLL}[$self->{SQLC}] = \@len;
 		++$self->{SQLC};
